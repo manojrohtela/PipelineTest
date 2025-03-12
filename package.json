@@ -1,0 +1,23 @@
+{
+  "name": "pipelinetest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://manojrohtela@github.com/manojrohtela/PipelineTest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manojrohtela/PipelineTest/issues"
+  },
+  "homepage": "https://github.com/manojrohtela/PipelineTest#readme",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

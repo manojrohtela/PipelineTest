@@ -1,12 +1,15 @@
-name: Simple CI Pipeline
+name: Node.js CI/CD Pipeline 🚀
 
 on:
   push:
     branches:
-      - main
+      - main  # Run pipeline on push to main branch
   pull_request:
     branches:
-      - main
+      - main  # Run checks on PRs to main
+  schedule:
+    - cron: "0 0 * * *"  # Scheduled deployment at 12:00 AM UTC daily
+  workflow_dispatch:  # Allows manual execution
 
 jobs:
   build:
@@ -15,14 +18,39 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
-          node-version: "18"
-
+          node-version: '18'
+      
+      - name: Cache Dependencies ⚡
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      
       - name: Install Dependencies
         run: npm install
-
-      - name: Run Tests
+      
+      - name: Run Tests 🧪
         run: npm test
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Deploy to Server 🚀
+        run: |
+          aws s3 cp app.zip s3://my-app-bucket --profile aws-user || aws s3 cp backup.zip s3://my-app-bucket --profile aws-user
+      
+      - name: Notify Team 📢
+        if: always()
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment Completed!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
